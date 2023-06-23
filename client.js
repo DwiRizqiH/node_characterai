@@ -125,14 +125,14 @@ class Client {
     }
 
     // chat
-    async createOrContinueChat(characterId, externalId = null) {
+    async createOrContinueChat(characterId, externalId = null, newHistory = false) {
         if (!this.isAuthenticated()) throw Error('You must be authenticated to do this.');
         if (characterId == undefined || typeof(characterId) != 'string' || typeof(externalId != null ? externalId : '') != 'string') throw Error('Invalid arguments.')
 
-        let request = await this.requester.request('https://beta.character.ai/chat/history/continue/',  {
+        let request = await this.requester.request(`https://beta.character.ai/chat/history/${newHistory ? 'create' : 'continue'}/`,  {
             body:Parser.stringify({
                 character_external_id: characterId,
-                history_external_id: externalId,
+                history_external_id: newHistory ? null : externalId,
             }),
             method:'POST',
             headers:this.getHeaders()
